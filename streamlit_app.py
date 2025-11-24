@@ -1,53 +1,61 @@
 import streamlit as st
-from openai import OpenAI
+import functions_reviewer
 
-# Show title and description.
-st.title("📄 Document question answering")
-st.write(
-    "Upload a document below and ask a question about it – GPT will answer! "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
-)
+st.set_page_config(page_title="Funnel Reviewer")
 
-# Ask user for their OpenAI API key via `st.text_input`.
-# Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
-# via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
-else:
+# --- CSS: style ONLY primary buttons (Review) ---
+st.markdown("""
+<style>
+/* Streamlit primary button */
+button[data-testid="baseButton-primary"] {
+    background-color: #4CAF50 !important;
+    color: white !important;
+    border-radius: 8px !important;
+    border: none !important;
+    padding: 0.6rem 1.4rem !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+}
 
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
+button[data-testid="baseButton-primary"]:hover {
+    background-color: #45a049 !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
-    # Let the user upload a file via `st.file_uploader`.
-    uploaded_file = st.file_uploader(
-        "Upload a document (.txt or .md)", type=("txt", "md")
+# --- Title and Description ---
+st.title("Funnel Reviewer")
+st.write("Automatically review all your funnel steps in one go. Just paste your URLs below!")
+
+# --- Session state for text boxes ---
+if "funnel_inputs" not in st.session_state:
+    st.session_state.funnel_inputs = [""]
+
+
+def add_textbox():
+    st.session_state.funnel_inputs.append("")
+
+
+# --- Render input boxes ---
+for i in range(len(st.session_state.funnel_inputs)):
+    st.session_state.funnel_inputs[i] = st.text_input(
+        f"Funnel URL {i+1}",
+        value=st.session_state.funnel_inputs[i],
+        key=f"text_input_{i}",
+        placeholder="https://example.com"
     )
 
-    # Ask the user for a question via `st.text_area`.
-    question = st.text_area(
-        "Now ask a question about the document!",
-        placeholder="Can you give me a short summary?",
-        disabled=not uploaded_file,
-    )
+# This stays black (default)
+st.button("➕ Add another", on_click=add_textbox)
 
-    if uploaded_file and question:
+st.write("---")
 
-        # Process the uploaded file and question.
-        document = uploaded_file.read().decode()
-        messages = [
-            {
-                "role": "user",
-                "content": f"Here's a document: {document} \n\n---\n\n {question}",
-            }
-        ]
+# ⭐ Review button is now PRIMARY and gets the green color
+if st.button("Review", type="primary"):
+    st.subheader("Your Input URLs:")
+    for idx, text in enumerate(st.session_state.funnel_inputs, start=1):
+        #text = scrape_full_text(url)
+        #analysis = analyze_language_and_errors(text)
+        st.write(f"**URL {idx}:** {text}")
 
-        # Generate an answer using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=messages,
-            stream=True,
-        )
-
-        # Stream the response to the app using `st.write_stream`.
-        st.write_stream(stream)
