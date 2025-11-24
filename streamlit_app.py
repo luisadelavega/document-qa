@@ -49,7 +49,7 @@ for i in range(len(st.session_state.funnel_inputs)):
     )
 
 # This stays black (default)
-st.button("➕ Add another", on_click=add_textbox)
+st.button("➕ Add another url", on_click=add_textbox)
 
 st.write("---")
 
