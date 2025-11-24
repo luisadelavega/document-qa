@@ -43,12 +43,12 @@ def analyze_language_and_errors(full_text: str) -> str:
         "   (2) Light errors. For example, a term that is not very common for a native speaker.\n"
         "4. For each issue: provide the original snippet, corrected suggestion, and explanation.\n"
         "Respond in markdown with:\n"
-        "\n**Language detection:**\n"
+        "\n**🌐 Language detection:**\n"
         "- Main language: ...\n"
         "- Other languages: ...\n\n"
-        "1) **Critical errors to fix:**\n"
+        "1) **❗ Critical errors to fix:**\n"
         "- ...\n\n"
-        "2) **Light errors:**\n"
+        "2) **✨ Light errors:**\n"
         "- ..."
     )
 
