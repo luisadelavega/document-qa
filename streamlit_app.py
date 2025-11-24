@@ -53,11 +53,37 @@ st.button("➕ Add another", on_click=add_textbox)
 
 st.write("---")
 
+ALLOWED_DOMAINS = [
+    "berevera.com",
+    "be-arabelle.com",
+    "be-inova.com"
+]
 # ⭐ Review button is now PRIMARY and gets the green color
 if st.button("Review", type="primary"):
-    st.subheader("Your Input URLs:")
-    for idx, text in enumerate(st.session_state.funnel_inputs, start=1):
-        full_text = scrape_full_text(text)
-        analysis = analyze_language_and_errors(full_text)
-        st.write(f"**URL {idx}:** {analysis}")
+    st.subheader("Review results")
 
+    for idx, text in enumerate(st.session_state.funnel_inputs, start=1):
+
+        st.write(f"### URL {text}")
+
+        # --- 1️⃣ Check domain validity ---
+        if not any(domain in text for domain in ALLOWED_DOMAINS):
+            st.error("❌ This domain cannot be reviewed.")
+            st.write("---")
+            continue
+
+        # --- 2️⃣ Valid domain → show loading animation ---
+        with st.spinner("Reviewing this URL... Please wait ⏳"):
+
+            try:
+                full_text = scrape_full_text(text)
+                analysis = analyze_language_and_errors(full_text)
+
+                st.success("✔ Review complete!")
+                st.write(analysis)
+
+            except Exception as e:
+                st.error("❌ Error reviewing this URL.")
+                st.write(f"Details: `{e}`")
+
+        st.write("---")
