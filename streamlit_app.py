@@ -1,4 +1,5 @@
 import streamlit as st
+from openai import OpenAI
 from functions_reviewer import *
 
 st.set_page_config(page_title="Funnel Reviewer")
