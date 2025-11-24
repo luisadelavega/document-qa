@@ -55,7 +55,7 @@ st.write("---")
 if st.button("Review", type="primary"):
     st.subheader("Your Input URLs:")
     for idx, text in enumerate(st.session_state.funnel_inputs, start=1):
-        #text = scrape_full_text(url)
+        full_text = scrape_full_text(text)
         #analysis = analyze_language_and_errors(text)
-        st.write(f"**URL {idx}:** {text}")
+        st.write(f"**URL {idx}:** {full_text}")
 
