@@ -3,6 +3,8 @@ from functions_reviewer import *
 
 st.set_page_config(page_title="Funnel Reviewer")
 
+client = OpenAI()
+
 # --- CSS: style ONLY primary buttons (Review) ---
 st.markdown("""
 <style>

@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import os
 from openai import OpenAI
 
+
 # ------------------------------------------------------------
 # 1. Scrape full visible text from a URL
 # ------------------------------------------------------------
