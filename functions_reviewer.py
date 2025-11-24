@@ -26,7 +26,7 @@ def scrape_full_text(url: str) -> str:
 # 2. Analyze language + detect errors with the LLM
 # ------------------------------------------------------------
 def analyze_language_and_errors(full_text: str) -> str:
-    client = OpenAI()
+    client = OpenAI(api_key=st.secrets["openai"]["api_key"])
     # max_chars = 20000
     # if len(full_text) > max_chars:
     #     full_text = full_text[:max_chars]
