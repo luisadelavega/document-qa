@@ -1,5 +1,5 @@
 import streamlit as st
-import functions_reviewer
+from functions_reviewer import *
 
 st.set_page_config(page_title="Funnel Reviewer")
 
