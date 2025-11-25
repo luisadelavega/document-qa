@@ -53,26 +53,18 @@ st.button("➕ Add another url", on_click=add_textbox)
 
 st.write("---")
 
-# --- Device Selection ---
-col1, col2, col3 = st.columns(3)
-with col1:
-    desktop_selected = st.checkbox("Desktop", value=True)
-with col2:
-    mobile_selected = st.checkbox("Mobile")
-with col3:
-    both_selected = st.checkbox("Both")
+device_type = st.selectbox(
+    "Choose version to analyze",
+    ["mobile", "desktop", "both"]
+)
 
-# If "Both" is selected, override the others
-if both_selected:
+# Convert dropdown choice into device_modes list
+if device_choice == "Both":
     device_modes = ["desktop", "mobile"]
+elif device_choice == "Mobile":
+    device_modes = ["mobile"]
 else:
-    device_modes = []
-    if desktop_selected:
-        device_modes.append("desktop")
-    if mobile_selected:
-        device_modes.append("mobile")
-    if not device_modes:
-        device_modes = ["desktop"]  # fallback
+    device_modes = ["desktop"]
 
 ALLOWED_DOMAINS = [
     "berevera.com",
