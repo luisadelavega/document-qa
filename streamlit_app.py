@@ -53,12 +53,34 @@ st.button("➕ Add another url", on_click=add_textbox)
 
 st.write("---")
 
+# --- Device Selection ---
+col1, col2, col3 = st.columns(3)
+with col1:
+    desktop_selected = st.checkbox("Desktop", value=True)
+with col2:
+    mobile_selected = st.checkbox("Mobile")
+with col3:
+    both_selected = st.checkbox("Both")
+
+# If "Both" is selected, override the others
+if both_selected:
+    device_modes = ["desktop", "mobile"]
+else:
+    device_modes = []
+    if desktop_selected:
+        device_modes.append("desktop")
+    if mobile_selected:
+        device_modes.append("mobile")
+    if not device_modes:
+        device_modes = ["desktop"]  # fallback
+
 ALLOWED_DOMAINS = [
     "berevera.com",
     "be-arabelle.com",
     "be-inova.com"
 ]
 # ⭐ Review button is now PRIMARY and gets the green color
+# --- REVIEW BUTTON ---
 if st.button("Review", type="primary"):
     st.subheader("Review results")
 
@@ -66,24 +88,25 @@ if st.button("Review", type="primary"):
 
         st.write(f"### URL {text}")
 
-        # --- 1️⃣ Check domain validity ---
+        # --- Domain validation ---
         if not any(domain in text for domain in ALLOWED_DOMAINS):
             st.error("❌ This domain cannot be reviewed.")
             st.write("---")
             continue
 
-        # --- 2️⃣ Valid domain → show loading animation ---
-        with st.spinner("Reviewing this URL... Please wait ⏳"):
+        # --- Run analysis for each selected device type ---
+        for device in device_modes:
+            with st.spinner(f"Reviewing {device} version... Please wait ⏳"):
 
-            try:
-                full_text = scrape_full_text(text)
-                analysis = analyze_language_and_errors(full_text)
+                try:
+                    full_text = scrape_full_text(text, device=device)
+                    analysis = analyze_language_and_errors(full_text)
 
-                st.success("✔ Review complete!")
-                st.write(analysis)
+                    st.success(f"✔ Review complete ({device})")
+                    st.write(analysis)
 
-            except Exception as e:
-                st.error("❌ Error reviewing this URL.")
-                st.write(f"Details: `{e}`")
+                except Exception as e:
+                    st.error(f"❌ Error reviewing {device} version.")
+                    st.write(f"Details: `{e}`")
 
         st.write("---")
