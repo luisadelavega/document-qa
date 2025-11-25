@@ -53,9 +53,10 @@ st.button("➕ Add another url", on_click=add_textbox)
 
 st.write("---")
 
-device_type = st.selectbox(
-    "Choose version to analyze",
-    ["mobile", "desktop", "both"]
+device_choice = st.selectbox(
+    "Choose which version to review:",
+    ["Desktop", "Mobile", "Both"],
+    index=0
 )
 
 # Convert dropdown choice into device_modes list
