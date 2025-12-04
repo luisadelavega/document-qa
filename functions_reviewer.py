@@ -8,35 +8,29 @@ import streamlit as st
 # ------------------------------------------------------------
 # 1. Scrape full visible text from a URL
 # ------------------------------------------------------------
-def scrape_full_text(url: str) -> str:
-    headers = {
-        "User-Agent": (
+def scrape_full_text(url: str, device: str = "mobile") -> str:
+    # Choose the user agent based on device type
+    if device == "mobile":
+        user_agent = (
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) "
+            "AppleWebKit/605.1.15 (KHTML, like Gecko) "
+            "Version/15.0 Mobile/15E148 Safari/604.1"
+        )
+    else:
+        # Desktop is default
+        user_agent = (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
             "AppleWebKit/537.36 (KHTML, like Gecko) "
             "Chrome/121.0 Safari/537.36"
         )
-    }
+
+    headers = {"User-Agent": user_agent}
 
     resp = requests.get(url, headers=headers, timeout=20)
     resp.raise_for_status()
 
     soup = BeautifulSoup(resp.text, "html.parser")
-    
-    def tag_visible(element):
-        # ignore non-visible parents
-        if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
-            return False
-        # ignore HTML comments
-        if isinstance(element, Comment):
-            return False
-        # ignore hidden elements
-        if hasattr(element, "attrs"):
-            attrs = element.attrs
-            if attrs.get("aria-hidden") == "true":
-                return False
-            if "hidden" in attrs:
-                return False
-        return True
+    return soup.get_text(separator="\n", strip=True)
 
     # get all text nodes
     texts = soup.find_all(string=True)
